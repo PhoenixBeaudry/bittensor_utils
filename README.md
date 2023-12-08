@@ -24,6 +24,8 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 11. Check your funds have arrived. `btcli wallet balance`
 12. Login to WandB. `wandb login` And then paste in your API key. 
 13. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
+14. ?????
+15. Profit.
 
 ### Monitoring your miner
 Once your miner has been started by running auto_register.py. You can stop the script with CTRL-C.
