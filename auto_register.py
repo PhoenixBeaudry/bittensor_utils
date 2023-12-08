@@ -187,11 +187,13 @@ if __name__ == "__main__":
                 # Registration succeeded, start a miner
                 if (register_result == True):
                     print(f"Wallet: {wallet['id']} has been registered. Starting miner...")
+                    time.sleep(1)
                     start_miner(wallet)
                 else:
                     print("Registration Failed.")
             else:
                 print(f"Wallet {wallet['id']} already registered. Checking miner....")
+                time.sleep(1)
                 start_miner(wallet)
 
         # Wait 20s before retrying
