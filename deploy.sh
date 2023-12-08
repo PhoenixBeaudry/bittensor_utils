@@ -20,6 +20,9 @@ sudo apt install -y nodejs
 # Install PM2
 sudo npm install -g pm2
 
+# Install pip
+sudo apt install -y python3-pip
+
 # Clone cortex.t repository
 git clone https://github.com/corcel-api/cortex.t.git
 cd cortex.t
@@ -38,4 +41,4 @@ sudo docker-compose up -d
 
 cd ..
 
-echo "Setup completed!"
+echo "Deployment completed!"
