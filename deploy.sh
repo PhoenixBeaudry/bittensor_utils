@@ -17,8 +17,7 @@ sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Install npm
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt install -yq nodejs
+sudo apt install -yq nodejs npm
 
 # Install PM2
 sudo npm install -g pm2
