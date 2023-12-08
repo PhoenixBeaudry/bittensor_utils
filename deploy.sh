@@ -23,6 +23,9 @@ sudo npm install -g pm2
 # Install pip
 sudo apt install -y python3-pip
 
+# Install Bittensor
+curl -fsSL https://raw.githubusercontent.com/opentensor/bittensor/master/scripts/install.sh
+
 # Clone cortex.t repository
 git clone https://github.com/corcel-api/cortex.t.git
 cd cortex.t
