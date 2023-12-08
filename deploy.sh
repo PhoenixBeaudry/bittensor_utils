@@ -46,4 +46,7 @@ sudo docker-compose up -d
 
 cd ..
 
+# Refresh the shell environment
+source ~/.bashrc
+
 echo "Initial setup completed!"
