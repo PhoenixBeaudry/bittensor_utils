@@ -20,3 +20,13 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 9. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
 10. Fund your Bittensor cold wallet with ~2 TAO.
 11. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
+
+### Monitoring your miner
+Once your miner has been started by running auto_register.py. You can stop the script with CTRL-C.
+Then to ensure your miner is working correctly you can view it's logs with `pm2 logs miner-1`.
+Watch the logs and ensure that your miner is receiving IsAlive requests: `|      DEBUG       | accepting IsAlive request from 5F4...Ac3`.
+You will start receiving rewards once your miner receives Stream or Image requests: `|      DEBUG       | axon     | <-- | 984 B | StreamPrompting |`
+This can take a varying amount of time up to hours.
+Finally to ensure you are receiving rewards use the command: `btcli wallet overview --wallet.name coldwallet`.
+If your miner is receiving rewards on the network it will have a non-zero number in 'incentive' and 'emission'.
+Happy mining :)
