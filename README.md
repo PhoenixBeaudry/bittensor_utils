@@ -9,6 +9,7 @@
 5. Create a new Bittensor cold wallet. `btcli wallet new_coldkey --wallet.name coldwallet`
 6. Create a new Bittensor hot wallet. `btcli wallet new_hotkey --wallet.name coldwallet --wallet.hotkey hotwallet`
 7. Ensure you have saved the mnemonics for both wallets.
-8. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
-9. Fund your Bittensor cold wallet with ~2 TAO.
-10. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
+8. Rename your example .env. `mv bittensor_utils/example.env bittensor_utils/.env`
+9. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
+10. Fund your Bittensor cold wallet with ~2 TAO.
+11. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
