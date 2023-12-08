@@ -38,7 +38,4 @@ sudo docker-compose up -d
 
 cd ..
 
-# Clone bittensor_auto_register_script repository
-git clone https://github.com/PhoenixBeaudry/bittensor_utils.git
-
 echo "Setup completed!"
