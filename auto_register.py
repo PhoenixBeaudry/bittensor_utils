@@ -4,6 +4,8 @@ import subprocess
 import time
 import json
 import bittensor as bt
+from dotenv import load_dotenv
+load_dotenv()
 
 ##### Bittensor Code #####
 
@@ -34,19 +36,11 @@ def check_wallet_registration_status(wallet_config):
     for axon in axons:
         if axon.hotkey == wallet_config['wallet'].get_hotkey().ss58_address:
             return True
-        
+
     return False
 
-# Returns a list of UIDs about to be deregistered on a subnet
-def get_endangered_uids(wallet_config):
-    metagraph = wallet_config['metagraph']
-    uids = metagraph.uids.tolist()
-    incentive_list = metagraph.incentive.tolist()
-    uid_incentive = sorted(zip(uids, incentive_list), key=lambda x: x[1], reverse=True)
 
-    return list(uid_incentive)
-
-
+# Gets the UID of the wallet on it's subnet
 def get_wallet_uid(wallet_config):
     metagraph = wallet_config['metagraph']
     axons = metagraph.axons
@@ -56,6 +50,28 @@ def get_wallet_uid(wallet_config):
             return uid
         uid += 1
     return None
+
+
+# Returns a list of UIDs about to be deregistered on a subnet
+def get_endangered_uids(wallet_config):
+    subtensor = wallet_config['subtensor']
+    subnet_immunity_period = subtensor.immunity_period(wallet_config['subnet_id'])
+    current_block = subtensor.get_current_block()
+    
+    # Go through UIDs in subnet
+    subnet_neurons = subtensor.neurons(wallet_config['subnet_id'])
+    pruning_scores = []
+    id = 0
+    for neuron in subnet_neurons:
+        print(f"Checking UID {id}/255")
+        id += 1
+        # Get registration block of neuron
+        uid_registration_block = subtensor.query_subtensor("BlockAtRegistration", params=[wallet_config['subnet_id'], neuron.uid]).value
+        # Check if in immunity
+        if(current_block-uid_registration_block > subnet_immunity_period):
+            pruning_scores.append((neuron.uid, neuron.pruning_score))
+    return sorted(pruning_scores, key=lambda x: x[1])
+
 
 # Returns the amount of TAO a miner is making per block
 def get_rewards_per_block(wallet_config):
@@ -84,17 +100,21 @@ def register_wallet(wallet_config):
     if(register_cost < 3.0):
         # Registration cost is okay, attempt to register.
         registration_attempt = subtensor.burned_register(wallet=wallet_config['wallet'], netuid=wallet_config['subnet_id'], wait_for_finalization=True)
-
         if(registration_attempt):
             # Registration succeeded
             return True
         else:
             # Registration failed
+            print("Too Busy.")
             return False
+    else:
+        print(f"Too expensive: {register_cost}")
+        return False
 
 
 ##### Miner Code #####
 
+# Gets a miners running status. Returns True is a miner is running, False if it isnt, or None if there is an error.
 def get_miner_status(miner_name):
     # Get the list of all pm2 processes in JSON format
     result = subprocess.run(['pm2', 'jlist'], capture_output=True, text=True)
@@ -116,6 +136,7 @@ def get_miner_status(miner_name):
     return False
 
 
+# Checks if a miner is running and if it isn't starts one.
 def start_miner(wallet):
     # Check if miner already running
     status = get_miner_status("miner-" + wallet['id'])
@@ -129,33 +150,36 @@ def start_miner(wallet):
     
     # Start Miner
     env = os.environ.copy()
-    start_command = f"pm2 start ~/bittensor/sn18/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid 18 --subtensor.network local --subtensor.chain_endpoint localhost:9944 --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
+    start_command = f"pm2 start ~/cortex.t/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid 18 --subtensor.network local --subtensor.chain_endpoint localhost:9944 --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
     start_miner_attempt = subprocess.call(start_command, shell=True, env=env)
     if start_miner_attempt == 0:
         print("Miner started successfully.")
 
 
-
 ##### Main Function #####
 
+# Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
-    # Wallet structure: {wallet_name: "cold", wallet_hotkey: "hot", id: "1", port: "8091"}
+
+    ###### Important Input ######
     wallets = [
-        {'wallet_name': 'sn18cold', 'wallet_hotkey': 'sn18hot', 'id': "1", 'port': '8098'},
-        {'wallet_name': 'sn18cold', 'wallet_hotkey': 'sn18hot2', 'id': "2", 'port': '8099'}
+        #{'wallet_name': "coldtest", 'wallet_hotkey': "hottest", 'id': "1", 'port': "8091"}
+        {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
     ]
+    subnet_id = 18 # Hard coded subnet 18
 
     # For each wallet check if registered
     while True:
         for wallet in wallets:
-            wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], 18) # Hard coded subnet 18
+            wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id) 
 
             # Check if registered on subnet
             is_registered = check_wallet_registration_status(wallet_config) 
 
-            # If wallet not registered, try register
-            if (not is_registered):
+            # If wallet not registered attempt registration.
+            if(not is_registered):
                 print(f"Wallet: {wallet['id']} is not registered.")
+
                 print(f"Attempting register Wallet {wallet['id']}... ")
                 # Try register
                 register_result = register_wallet(wallet_config)
@@ -171,6 +195,6 @@ if __name__ == "__main__":
                 start_miner(wallet)
 
         # Wait 20s before retrying
-        time.sleep(20)
+        time.sleep(10)
 
 
