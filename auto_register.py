@@ -97,7 +97,7 @@ def register_wallet(wallet_config):
     subtensor = wallet_config['subtensor']
     # Check register cost
     register_cost = subtensor.burn(wallet_config['subnet_id'])
-    if(register_cost < 3.0):
+    if(register_cost < 2.0):
         # Registration cost is okay, attempt to register.
         registration_attempt = subtensor.burned_register(wallet=wallet_config['wallet'], netuid=wallet_config['subnet_id'], wait_for_finalization=True)
         if(registration_attempt):
