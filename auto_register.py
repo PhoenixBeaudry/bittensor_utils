@@ -7,6 +7,7 @@ import bittensor as bt
 
 ##### Bittensor Code #####
 
+# Gets all the relevant Bittensor information on a specific wallet and subnet
 def get_wallet_config(wallet_name, wallet_hotkey, subnet_id):
     parser = argparse.ArgumentParser()
     bt.subtensor.add_args(parser)
@@ -24,23 +25,58 @@ def get_wallet_config(wallet_name, wallet_hotkey, subnet_id):
         'subtensor': subtensor,
         'metagraph': metagraph
     }
-
     return wallet_config
 
 
+# Checks the registration status of a wallet on the subnet in its config.
 def check_wallet_registration_status(wallet_config):
     axons = wallet_config['metagraph'].axons
-
-    registered_hotkeys = []
     for axon in axons:
-        registered_hotkeys.append(axon.hotkey)
+        if axon.hotkey == wallet_config['wallet'].get_hotkey().ss58_address:
+            return True
+        
+    return False
 
-    if wallet_config['wallet'].get_hotkey().ss58_address not in registered_hotkeys:
-        return False
-    else:
-        return True
+# Returns a list of UIDs about to be deregistered on a subnet
+def get_endangered_uids(wallet_config):
+    metagraph = wallet_config['metagraph']
+    uids = metagraph.uids.tolist()
+    incentive_list = metagraph.incentive.tolist()
+    uid_incentive = sorted(zip(uids, incentive_list), key=lambda x: x[1], reverse=True)
+
+    return list(uid_incentive)
 
 
+def get_wallet_uid(wallet_config):
+    metagraph = wallet_config['metagraph']
+    axons = metagraph.axons
+    uid = 0
+    for axon in axons:
+        if axon.hotkey == wallet_config['wallet'].get_hotkey().ss58_address:
+            return uid
+        uid += 1
+    return None
+
+# Returns the amount of TAO a miner is making per block
+def get_rewards_per_block(wallet_config):
+    metagraph = wallet_config['metagraph']
+    subnet_tao_per_day = get_subnet_weight(wallet_config['subnet_id'])*7200
+    incentives = metagraph.incentive.tolist()
+    wallet_uid = get_wallet_uid(wallet_config)
+    wallet_incentive = incentives[wallet_uid]
+    return wallet_incentive*subnet_tao_per_day*0.41 # 41% goes to miners
+
+
+# Returns the current percent emissions of the given subnet.
+def get_subnet_weight(subnet_id):
+    parser = argparse.ArgumentParser()
+    bt.subtensor.add_args(parser)
+    config = bt.config(parser)
+    subtensor = bt.subtensor(config=config)
+    return float(subtensor.get_emission_value_by_subnet(netuid=subnet_id))
+
+
+# Attempts to register a given wallet on the subnet in its config.
 def register_wallet(wallet_config):
     subtensor = wallet_config['subtensor']
     # Check register cost
