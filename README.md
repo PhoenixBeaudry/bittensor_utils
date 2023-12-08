@@ -15,7 +15,7 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 4. Log out of your instance and back in.
 5. Create a new Bittensor cold wallet. `btcli wallet new_coldkey --wallet.name coldwallet`
 6. Create a new Bittensor hot wallet. `btcli wallet new_hotkey --wallet.name coldwallet --wallet.hotkey hotwallet`
-7. Ensure you have saved the mnemonics for both wallets.
+7. Ensure you have saved the mnemonics for both wallets and the password for the cold wallet.
 8. Rename your example .env. `mv bittensor_utils/example.env bittensor_utils/.env`
 9. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
 10. Fund your Bittensor cold wallet with ~2 TAO.
