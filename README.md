@@ -1,5 +1,12 @@
 # Useful scripts for setting up a new server for mining on Bittensor Subnet 18.
 
+## Testing
+These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances with 500GB of storage.
+
+### Prerequisites
+- A fresh Ubuntu 22.04 install. Local or Cloud.
+- Ports 8098, 9933 and 30333 portforwarded.
+
 ### How to use
 
 1. Clone this repo in a fresh Ubuntu 22.04 instance. `git clone https://github.com/PhoenixBeaudry/bittensor_utils`

@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Install Docker prerequisites
-sudo apt update
-sudo apt upgrade
+export DEBIAN_FRONTEND=noninteractive
 
-sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+# Install Docker prerequisites
+sudo apt update -yq
+
+sudo apt install -yq apt-transport-https ca-certificates curl software-properties-common
 
 # Install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -17,13 +18,13 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # Install npm
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-sudo apt install -y nodejs
+sudo apt install -yq nodejs
 
 # Install PM2
 sudo npm install -g pm2
 
 # Install pip
-sudo apt install -y python3-pip
+sudo apt install -yq python3-pip
 
 # Install Bittensor
 curl -fsSL https://raw.githubusercontent.com/opentensor/bittensor/master/scripts/install.sh
