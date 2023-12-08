@@ -5,6 +5,8 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 
 ### Prerequisites
 - A fresh Ubuntu 22.04 install. Local or Cloud.
+- An OpenAI API Key that can handle $160 dollars of running cost a day.
+- A WandB API Key (Get one here: https://wandb.ai/)
 - Ports 8098, 9933 and 30333 portforwarded.
 
 ### How to use
@@ -20,7 +22,8 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 9. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
 10. Fund your Bittensor cold wallet with ~2 TAO. (View wallet address with `btcli wallet list`)
 11. Check your funds have arrived. `btcli wallet balance`
-12. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
+12. Login to WandB. `wandb login` And then paste in your API key. 
+13. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
 
 ### Monitoring your miner
 Once your miner has been started by running auto_register.py. You can stop the script with CTRL-C.
