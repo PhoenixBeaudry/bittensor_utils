@@ -23,10 +23,17 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.large Instances 
 
 ### Monitoring your miner
 Once your miner has been started by running auto_register.py. You can stop the script with CTRL-C.
+
 Then to ensure your miner is working correctly you can view it's logs with `pm2 logs miner-1`.
+
 Watch the logs and ensure that your miner is receiving IsAlive requests: `|      DEBUG       | accepting IsAlive request from 5F4...Ac3`.
-You will start receiving rewards once your miner receives Stream or Image requests: `|      DEBUG       | axon     | <-- | 984 B | StreamPrompting |`
+
+You will start receiving rewards once your miner receives Stream or Image requests: `|      DEBUG       | axon     | <-- | 984 B | StreamPrompting |`.
+
 This can take a varying amount of time up to hours.
+
 Finally to ensure you are receiving rewards use the command: `btcli wallet overview --wallet.name coldwallet`.
+
 If your miner is receiving rewards on the network it will have a non-zero number in 'incentive' and 'emission'.
+
 Happy mining :)
