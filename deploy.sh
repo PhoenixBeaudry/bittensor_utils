@@ -2,6 +2,8 @@
 
 # Install Docker prerequisites
 sudo apt update
+sudo apt upgrade
+
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Install Docker
@@ -44,4 +46,4 @@ sudo docker-compose up -d
 
 cd ..
 
-echo "Deployment completed!"
+echo "Initial setup completed!"
