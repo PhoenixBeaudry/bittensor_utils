@@ -35,6 +35,9 @@ cd cortex.t
 # Install cortex.t dependencies
 pip install -e .
 
+# Install dotenv
+pip install python-dotenv
+
 cd ..
 
 # Clone subtensor repository
