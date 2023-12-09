@@ -53,20 +53,23 @@ def get_wallet_uid(wallet_config):
 
 
 # Returns a list of UIDs about to be deregistered on a subnet
-def get_endangered_uids(wallet_config):
-    subtensor = wallet_config['subtensor']
-    subnet_immunity_period = subtensor.immunity_period(wallet_config['subnet_id'])
+def get_endangered_uids(subnet_id):
+    parser = argparse.ArgumentParser()
+    bt.subtensor.add_args(parser)
+    config = bt.config(parser)
+    subtensor = bt.subtensor(config=config)
+    subnet_immunity_period = subtensor.immunity_period(subnet_id)
     current_block = subtensor.get_current_block()
     
     # Go through UIDs in subnet
-    subnet_neurons = subtensor.neurons(wallet_config['subnet_id'])
+    subnet_neurons = subtensor.neurons(subnet_id)
     pruning_scores = []
     id = 0
     for neuron in subnet_neurons:
         print(f"Checking UID {id}/255")
         id += 1
         # Get registration block of neuron
-        uid_registration_block = subtensor.query_subtensor("BlockAtRegistration", params=[wallet_config['subnet_id'], neuron.uid]).value
+        uid_registration_block = subtensor.query_subtensor("BlockAtRegistration", params=[subnet_id, neuron.uid]).value
         # Check if in immunity
         if(current_block-uid_registration_block > subnet_immunity_period):
             pruning_scores.append((neuron.uid, neuron.pruning_score))
@@ -167,8 +170,15 @@ if __name__ == "__main__":
         {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
     ]
     subnet_id = 18 # Hard coded subnet 18
+    uid_snipe = True
 
-    # For each wallet check if registered
+    # If trying to get low UIDs check availability
+    low_uid_available = False
+    if(uid_snipe):
+        endangered_uids = get_endangered_uids(subnet_id)
+        if(endangered_uids[0][0] < 100 and endangered_uids[1][0] < 100):
+            low_uid_available = True
+
     while True:
         for wallet in wallets:
             wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
@@ -179,10 +189,18 @@ if __name__ == "__main__":
             # If wallet not registered attempt registration.
             if(not is_registered):
                 print(f"Wallet: {wallet['id']} is not registered.")
-
                 print(f"Attempting register Wallet {wallet['id']}... ")
-                # Try register
-                register_result = register_wallet(wallet_config)
+
+                if(uid_snipe and low_uid_available):
+                    # Try register
+                    print("Low UID available.")
+                    register_result = register_wallet(wallet_config)
+                elif(uid_snipe and not low_uid_available):
+                    print("No low UIDs available.")
+                    register_result = False
+                else:
+                    # Try register
+                    register_result = register_wallet(wallet_config)
 
                 # Registration succeeded, start a miner
                 if (register_result == True):
