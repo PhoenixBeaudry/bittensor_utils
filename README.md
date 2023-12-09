@@ -37,4 +37,15 @@ Finally to ensure you are receiving rewards use the command: `btcli wallet overv
 
 If your miner is receiving rewards on the network it will have a non-zero number in 'incentive' and 'emission'.
 
+To check your estimated daily rewards enter your hotkey found with `btcli wallet list` in to `https://taostats.io`.
+
+
+### Useful Commands
+
+- Check whether your miner is running: `pm2 status`
+- Check the logs of your miner: `pm2 logs miner-1`
+- Start your miner `pm2 start miner-1`
+- Stop your miner: `pm2 stop miner-1`
+
+
 Happy mining :)
