@@ -177,7 +177,7 @@ if __name__ == "__main__":
         low_uid_available = False
         if(uid_snipe):
             endangered_uids = get_endangered_uids(subnet_id)
-            if(endangered_uids[0][0] < 100 and endangered_uids[1][0] < 100):
+            if(endangered_uids[0][0] < 120):
                 low_uid_available = True
 
         for wallet in wallets:
