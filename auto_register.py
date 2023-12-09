@@ -172,14 +172,14 @@ if __name__ == "__main__":
     subnet_id = 18 # Hard coded subnet 18
     uid_snipe = True
 
-    # If trying to get low UIDs check availability
-    low_uid_available = False
-    if(uid_snipe):
-        endangered_uids = get_endangered_uids(subnet_id)
-        if(endangered_uids[0][0] < 100 and endangered_uids[1][0] < 100):
-            low_uid_available = True
-
     while True:
+        # If trying to get low UIDs check availability
+        low_uid_available = False
+        if(uid_snipe):
+            endangered_uids = get_endangered_uids(subnet_id)
+            if(endangered_uids[0][0] < 100 and endangered_uids[1][0] < 100):
+                low_uid_available = True
+
         for wallet in wallets:
             wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
 
