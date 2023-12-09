@@ -161,23 +161,24 @@ def start_miner(wallet):
 
 ##### Main Function #####
 
+###### Important Input ######
+wallets = [
+    #{'wallet_name': "coldtest", 'wallet_hotkey': "hottest", 'id': "1", 'port': "8091"}
+    {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
+]
+subnet_id = 18 # Hard coded subnet 18
+uid_snipe = True
+uid_snipe_threshold = 65
+
 # Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
-
-    ###### Important Input ######
-    wallets = [
-        #{'wallet_name': "coldtest", 'wallet_hotkey': "hottest", 'id': "1", 'port': "8091"}
-        {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
-    ]
-    subnet_id = 18 # Hard coded subnet 18
-    uid_snipe = True
-
     while True:
-        # If trying to get low UIDs check availability
+        # If trying to get low UIDs, check availability
         low_uid_available = False
         if(uid_snipe):
             endangered_uids = get_endangered_uids(subnet_id)
-            if(endangered_uids[0][0] < 120):
+            # Wait for next two deregs to be low to guarantee a good result.
+            if(endangered_uids[0][0] < uid_snipe_threshold and endangered_uids[1][0] < uid_snipe_threshold):
                 low_uid_available = True
 
         for wallet in wallets:
@@ -189,17 +190,18 @@ if __name__ == "__main__":
             # If wallet not registered attempt registration.
             if(not is_registered):
                 print(f"Wallet: {wallet['id']} is not registered.")
-                print(f"Attempting register Wallet {wallet['id']}... ")
-
+                
                 if(uid_snipe and low_uid_available):
                     # Try register
                     print("Low UID available.")
+                    print(f"Attempting register Wallet {wallet['id']}... ")
                     register_result = register_wallet(wallet_config)
                 elif(uid_snipe and not low_uid_available):
-                    print("No low UIDs available.")
+                    print("No low UIDs available. Waiting...")
                     register_result = False
                 else:
                     # Try register
+                    print(f"Attempting register Wallet {wallet['id']}... ")
                     register_result = register_wallet(wallet_config)
 
                 # Registration succeeded, start a miner
