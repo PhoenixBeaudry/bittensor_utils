@@ -168,7 +168,7 @@ wallets = [
 ]
 subnet_id = 18 # Hard coded subnet 18
 uid_snipe = True
-uid_snipe_threshold = 65
+uid_snipe_threshold = 80
 
 # Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         low_uid_available = False
         if(uid_snipe):
             endangered_uids = get_endangered_uids(subnet_id)
-            # Wait for next two deregs to be low to guarantee a good result.
+            # Wait for low UID probability to be worth it.
             if(endangered_uids[0][0] < uid_snipe_threshold and endangered_uids[1][0] < uid_snipe_threshold):
                 low_uid_available = True
 
