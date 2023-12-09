@@ -150,7 +150,7 @@ def start_miner(wallet):
     
     # Start Miner
     env = os.environ.copy()
-    start_command = f"pm2 start ~/cortex.t/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid 18 --subtensor.network local --subtensor.chain_endpoint localhost:9944 --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
+    start_command = f"pm2 start ~/cortex.t/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid 18 --subtensor.network local --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
     start_miner_attempt = subprocess.call(start_command, shell=True, env=env)
     if start_miner_attempt == 0:
         print("Miner started successfully.")
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     # For each wallet check if registered
     while True:
         for wallet in wallets:
-            wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id) 
+            wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
 
             # Check if registered on subnet
             is_registered = check_wallet_registration_status(wallet_config) 
@@ -198,5 +198,3 @@ if __name__ == "__main__":
 
         # Wait 20s before retrying
         time.sleep(10)
-
-
