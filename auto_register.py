@@ -153,7 +153,7 @@ def start_miner(wallet):
     
     # Start Miner
     env = os.environ.copy()
-    start_command = f"pm2 start ~/cortex.t/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid 18 --subtensor.network local --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
+    start_command = f"pm2 start {sn18_repo_path}/miner/miner.py --name miner-{wallet['id']} --interpreter python3 -- --netuid {subnet_id} --subtensor.network local --wallet.name {wallet['wallet_name']} --wallet.hotkey {wallet['wallet_hotkey']} --axon.port {wallet['port']} --logging.debug"
     start_miner_attempt = subprocess.call(start_command, shell=True, env=env)
     if start_miner_attempt == 0:
         print("Miner started successfully.")
@@ -167,6 +167,7 @@ wallets = [
     {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
 ]
 subnet_id = 18 # Hard coded subnet 18
+sn18_repo_path = "~/cortex.t"
 
 # Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
@@ -180,7 +181,7 @@ if __name__ == "__main__":
             # If wallet not registered attempt registration.
             if(not is_registered):
                 print(f"Wallet: {wallet['id']} is not registered.")
-                
+
                 # Try register
                 print(f"Attempting register Wallet {wallet['id']}... ")
                 register_result = register_wallet(wallet_config)
@@ -198,4 +199,4 @@ if __name__ == "__main__":
                 start_miner(wallet)
 
         # Wait 20s before retrying
-        time.sleep(10)
+        time.sleep(5)
