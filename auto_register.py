@@ -184,46 +184,46 @@ register_tries_before_refresh = 3 # How many times to try register before refres
 if __name__ == "__main__":
     while True:
         # If trying to get low UIDs, check availability
-        low_uid_available = False
         endangered_uids = get_endangered_uids(subnet_id)
 
-        print(f"The next 5 UIDs to be deregistered are:")
+        print(f"The next 4 UIDs to be deregistered are:")
         print(f"{endangered_uids[:4]}")
 
         # Wait for low UID probability to be worth it.
         if(all(uid < uid_snipe_threshold for uid in endangered_uids[:uid_snipe_certainty-1])):
-            low_uid_available = True
             print(f"Low UID condition met. Attempting to register wallets.")
 
-        for wallet in wallets:
-            wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
+            for wallet in wallets:
+                wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
 
-            # Check if registered on subnet
-            is_registered = check_wallet_registration_status(wallet_config) 
+                # Check if registered on subnet
+                is_registered = check_wallet_registration_status(wallet_config) 
 
-            # If wallet not registered attempt registration.
-            if(not is_registered and low_uid_available):
-                print(f"Wallet: {wallet['id']} is not registered.")
+                # If wallet not registered attempt registration.
+                if(not is_registered):
+                    print(f"Wallet: {wallet['id']} is not registered.")
 
-                for i in range(register_tries_before_refresh):
-                    # Try register
-                    print(f"Attempting register Wallet {wallet['id']}... ")
-                    register_result = register_wallet(wallet_config)
+                    for i in range(register_tries_before_refresh):
+                        # Try register
+                        print(f"Attempting register Wallet {wallet['id']}... ")
+                        register_result = register_wallet(wallet_config)
 
-                    # Registration succeeded, start a miner
-                    if (register_result == True):
-                        print(f"Wallet: {wallet['id']} has been registered. Starting miner...")
-                        time.sleep(1)
-                        start_miner(wallet)
-                        break
-                    else:
-                        print("Registration Failed.")
-            elif(is_registered):
-                print(f"Wallet {wallet['id']} already registered. Checking miner....")
-                time.sleep(1)
-                start_miner(wallet)
-            else:
-                print("No low UIDs available.")
+                        # Registration succeeded, start a miner
+                        if (register_result == True):
+                            print(f"Wallet: {wallet['id']} has been registered. Starting miner...")
+                            time.sleep(1)
+                            start_miner(wallet)
+                            break
+                        else:
+                            print("Registration Failed.")
+                elif(is_registered):
+                    print(f"Wallet {wallet['id']} already registered. Checking miner....")
+                    time.sleep(1)
+                    start_miner(wallet)
+        else:
+            print(f"No low UIDs available.")
+
+        
 
         # Wait 20s before retrying
-        time.sleep(1)
+        time.sleep(2)
