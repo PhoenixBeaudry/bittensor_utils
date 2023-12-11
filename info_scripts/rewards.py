@@ -1,6 +1,7 @@
 import bittensor as bt
 import argparse
 import json
+import os
 
 parser = argparse.ArgumentParser()
 bt.subtensor.add_args(parser)
