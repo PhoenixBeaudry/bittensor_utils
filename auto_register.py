@@ -175,8 +175,8 @@ subnet_id = 18 # Hard coded subnet 18
 sn18_repo_path = "~/cortex.t"
 
 uid_snipe = True
-uid_snipe_threshold = 70 # A low UID is one < this number
-uid_snipe_certainty = 3 # How many consecutive low UIDs should there be before trying to register
+uid_snipe_threshold = 80 # A low UID is one < this number
+uid_snipe_certainty = 2 # How many consecutive low UIDs should there be before trying to register
 register_tries_before_refresh = 3 # How many times to try register before refreshing low UID list
 
 
