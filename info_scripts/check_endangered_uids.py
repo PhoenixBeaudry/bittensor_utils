@@ -22,7 +22,8 @@ def get_endangered_uids(subnet_id):
         uid_registration_block = subtensor.query_subtensor("BlockAtRegistration", params=[subnet_id, neuron.uid]).value
         # Check if in immunity
         if(current_block-uid_registration_block > subnet_immunity_period):
-            pruning_scores.append((neuron.uid, neuron.pruning_score))
+            if(neuron.pruning_score != 0):
+                pruning_scores.append((neuron.uid, neuron.pruning_score))
     return sorted(pruning_scores, key=lambda x: x[1])
 
 def find_lowest_available_uid_below(lst, threshold):
@@ -37,5 +38,4 @@ if __name__ == "__main__":
     print(f"Checking Pruning Order for Subnet {subnet_to_check}")
     endangered_uids = get_endangered_uids(subnet_to_check)
     pruning_order = [item[0] for item in endangered_uids]
-    print(f"The next 20 UIDs to be deregistered are: {pruning_order[:20]}")
-    print(f"A low UID will be available in {find_lowest_available_uid_below(pruning_order, threshold)} registrations.")
+    print(f"The next 20 UIDs to be deregistered are: {endangered_uids[:20]}") 
