@@ -18,14 +18,15 @@ These scripts have been tested on fresh AWS EC2 Ubuntu 22.04 t2.xlarge Instances
 5. Create a new Bittensor cold wallet. `btcli wallet new_coldkey --wallet.name coldwallet`
 6. Create a new Bittensor hot wallet. `btcli wallet new_hotkey --wallet.name coldwallet --wallet.hotkey hotwallet`
 7. Ensure you have saved the mnemonics for both wallets and the password for the cold wallet.
-8. Rename your example .env. `mv bittensor_utils/example.env bittensor_utils/.env`
-9. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
-10. Fund your Bittensor cold wallet with ~2 TAO. (View wallet address with `btcli wallet list`)
-11. Check your funds have arrived. `btcli wallet balance`
-12. Login to WandB. `wandb login` And then paste in your API key. 
-13. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
-14. ?????
-15. Profit.
+8. Rename your example wallets.json. `mv bittensor_utils/example.wallets.json bittensor_utils/wallets.json`
+9. Rename your example .env. `mv bittensor_utils/example.env bittensor_utils/.env`
+10. Add your OpenAI API key and Bittensor cold wallet password to .env `nano bittensor_utils/.env`
+11. Fund your Bittensor cold wallet with ~2 TAO. (View wallet address with `btcli wallet list`)
+12. Check your funds have arrived. `btcli wallet balance`
+13. Login to WandB. `wandb login` And then paste in your API key. 
+14. Run the auto_register script to register to Subnet 18 and automatically start a miner. `python3 bittensor_utils/auto_register.py`
+15. ?????
+16. Profit.
 
 ### Monitoring your miner
 Once your miner has been started by running auto_register.py. You can stop the script with CTRL-C.
