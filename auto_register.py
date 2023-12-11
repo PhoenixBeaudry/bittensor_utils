@@ -221,7 +221,7 @@ if __name__ == "__main__":
                     time.sleep(1)
                     start_miner(wallet)
         else:
-            print(f"No low UIDs available.")
+            print(f"Not enough low UIDs available.")
 
         
 
