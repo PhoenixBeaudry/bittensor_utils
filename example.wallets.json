@@ -1,0 +1,8 @@
+[
+    {
+        "wallet_name": "coldwallet",
+        "wallet_hotkey": "hotwallet",
+        "id": "1",
+        "port": "8098"
+    }
+]

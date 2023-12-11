@@ -162,10 +162,10 @@ def start_miner(wallet):
 ##### Main Function #####
 
 ###### Important Input ######
-wallets = [
-    #{'wallet_name': "coldtest", 'wallet_hotkey': "hottest", 'id': "1", 'port': "8091"}
-    {'wallet_name': 'coldwallet', 'wallet_hotkey': 'hotwallet', 'id': "1", 'port': '8098'}
-]
+# Open the JSON file and load its content into a Python object
+with open('wallets.json', 'r') as file:
+    wallets = json.load(file)
+
 subnet_id = 18 # Hard coded subnet 18
 sn18_repo_path = "~/cortex.t"
 
