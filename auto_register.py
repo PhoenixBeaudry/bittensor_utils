@@ -163,7 +163,7 @@ def start_miner(wallet):
 
 ###### Important Input ######
 # Open the JSON file and load its content into a Python object
-with open('wallets.json', 'r') as file:
+with open('~/bittensor_utils/wallets.json', 'r') as file:
     wallets = json.load(file)
 
 subnet_id = 18 # Hard coded subnet 18
