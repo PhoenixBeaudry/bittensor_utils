@@ -37,5 +37,4 @@ if __name__ == "__main__":
     print(f"Checking Pruning Order for Subnet {subnet_to_check}")
     endangered_uids = get_endangered_uids(subnet_to_check)
     pruning_order = [item[0] for item in endangered_uids]
-    print(f"The next 20 UIDs to be deregistered are: {pruning_order[:20]}")
-    print(f"A low UID will be available in {find_lowest_available_uid_below(pruning_order, threshold)} registrations.")
+    print(f"The next 20 UIDs to be deregistered are: {endangered_uids[:20]}") 
