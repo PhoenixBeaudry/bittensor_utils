@@ -170,8 +170,10 @@ subnet_id = 18 # Hard coded subnet 18
 sn18_repo_path = "~/cortex.t"
 
 uid_snipe = True
-uid_snipe_threshold = 70
-register_tries_before_refresh = 3
+uid_snipe_threshold = 70 # A low UID is one < this number
+uid_snipe_certainty = 3 # How many consecutive low UIDs should there be before trying to register
+register_tries_before_refresh = 3 # How many times to try register before refreshing low UID list
+
 
 # Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
@@ -179,9 +181,14 @@ if __name__ == "__main__":
         # If trying to get low UIDs, check availability
         low_uid_available = False
         endangered_uids = get_endangered_uids(subnet_id)
+
+        print(f"The next 5 UIDs to be deregistered are:")
+        print(f"{endangered_uids[:4]}")
+
         # Wait for low UID probability to be worth it.
-        if(endangered_uids[0][0] < uid_snipe_threshold and endangered_uids[1][0] < uid_snipe_threshold):
+        if(all(uid < uid_snipe_threshold for uid in endangered_uids[:uid_snipe_certainty-1])):
             low_uid_available = True
+            print(f"Low UID condition met. Attempting to register wallets.")
 
         for wallet in wallets:
             wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
@@ -191,7 +198,7 @@ if __name__ == "__main__":
 
             # If wallet not registered attempt registration.
             if(not is_registered and low_uid_available):
-                print(f"Wallet: {wallet['id']} is not registered and low UID is available.")
+                print(f"Wallet: {wallet['id']} is not registered.")
 
                 for i in range(register_tries_before_refresh):
                     # Try register
@@ -206,11 +213,12 @@ if __name__ == "__main__":
                         break
                     else:
                         print("Registration Failed.")
-
-            else:
+            elif(is_registered):
                 print(f"Wallet {wallet['id']} already registered. Checking miner....")
                 time.sleep(1)
                 start_miner(wallet)
+            else:
+                print("No low UIDs available.")
 
         # Wait 20s before retrying
         time.sleep(1)
