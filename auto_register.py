@@ -169,9 +169,20 @@ with open('wallets.json', 'r') as file:
 subnet_id = 18 # Hard coded subnet 18
 sn18_repo_path = "~/cortex.t"
 
+uid_snipe = True
+uid_snipe_threshold = 70
+register_tries_before_refresh = 3
+
 # Make sure you have OPENAI_API_KEY and BT_COLD_PW_WALLETNAME in a .env file.
 if __name__ == "__main__":
     while True:
+        # If trying to get low UIDs, check availability
+        low_uid_available = False
+        endangered_uids = get_endangered_uids(subnet_id)
+        # Wait for low UID probability to be worth it.
+        if(endangered_uids[0][0] < uid_snipe_threshold and endangered_uids[1][0] < uid_snipe_threshold):
+            low_uid_available = True
+
         for wallet in wallets:
             wallet_config = get_wallet_config(wallet['wallet_name'], wallet['wallet_hotkey'], subnet_id)
 
@@ -179,24 +190,27 @@ if __name__ == "__main__":
             is_registered = check_wallet_registration_status(wallet_config) 
 
             # If wallet not registered attempt registration.
-            if(not is_registered):
-                print(f"Wallet: {wallet['id']} is not registered.")
+            if(not is_registered and low_uid_available):
+                print(f"Wallet: {wallet['id']} is not registered and low UID is available.")
 
-                # Try register
-                print(f"Attempting register Wallet {wallet['id']}... ")
-                register_result = register_wallet(wallet_config)
+                for i in range(register_tries_before_refresh):
+                    # Try register
+                    print(f"Attempting register Wallet {wallet['id']}... ")
+                    register_result = register_wallet(wallet_config)
 
-                # Registration succeeded, start a miner
-                if (register_result == True):
-                    print(f"Wallet: {wallet['id']} has been registered. Starting miner...")
-                    time.sleep(1)
-                    start_miner(wallet)
-                else:
-                    print("Registration Failed.")
+                    # Registration succeeded, start a miner
+                    if (register_result == True):
+                        print(f"Wallet: {wallet['id']} has been registered. Starting miner...")
+                        time.sleep(1)
+                        start_miner(wallet)
+                        break
+                    else:
+                        print("Registration Failed.")
+
             else:
                 print(f"Wallet {wallet['id']} already registered. Checking miner....")
                 time.sleep(1)
                 start_miner(wallet)
 
         # Wait 20s before retrying
-        time.sleep(5)
+        time.sleep(1)
