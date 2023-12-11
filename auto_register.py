@@ -21,7 +21,7 @@ def get_wallet_config(wallet_name, wallet_hotkey, subnet_id):
     wallet = bt.wallet(config=config)
     subtensor = bt.subtensor(config=config)
     metagraph = subtensor.metagraph(subnet_id)
-    wallet_config ={
+    wallet_config = {
         'wallet': wallet,
         'subnet_id': subnet_id,
         'subtensor': subtensor,
@@ -163,7 +163,7 @@ def start_miner(wallet):
 
 ###### Important Input ######
 # Open the JSON file and load its content into a Python object
-with open('wallets.json', 'r') as file:
+with open('~/bittensor_utils/wallets.json', 'r') as file:
     wallets = json.load(file)
 
 subnet_id = 18 # Hard coded subnet 18
