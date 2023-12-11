@@ -1,6 +1,7 @@
 import bittensor as bt
 import argparse
 import json
+import os
 
 parser = argparse.ArgumentParser()
 bt.subtensor.add_args(parser)
@@ -56,7 +57,9 @@ def get_rewards_per_day(hotkey, subnet_id):
 
 if __name__ == "__main__":
     # Open the JSON file and load its content into a Python object
-    with open('wallets.json', 'r') as file:
+    # Define the path to your JSON file, expanding the tilde to the home directory
+    json_file_path = os.path.expanduser('~/bittensor_utils/wallets.json')
+    with open(json_file_path, 'r') as file:
         wallets = json.load(file)
 
     subnet_id = 18
