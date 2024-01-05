@@ -1,3 +1,5 @@
+# THIS GUIDE IS NOW OUT OF DATE | DO NOT USE
+
 # Useful scripts for setting up a new server for mining on Bittensor Subnet 18.
 
 ## Testing
